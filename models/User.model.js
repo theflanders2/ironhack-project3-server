@@ -1,19 +1,18 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
-const userSchema = new Schema(
-  {
-    email: {
-      type: String,
-      required: [true, 'Email is required.'],
-      unique: true,
-      lowercase: true,
-      trim: true
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required.']
-    }
+const userSchema = new Schema({
+  username: { type: String, unique: true, required: true },
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  firstName: { type: String, required: false },
+  birthYear: { type: Number, required: false },
+  avatar: { type: String, default: "" },
+  comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
+  gamesContributed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  gamesPlayed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  gamesCurrentlyPlaying: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  wishlist: [ { type: Schema.Types.ObjectId, ref: 'Game' } ]
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`    
@@ -21,6 +20,4 @@ const userSchema = new Schema(
   }
 );
 
-const User = model("User", userSchema);
-
-module.exports = User;
+module.exports = model("User", userSchema);
