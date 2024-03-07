@@ -13,16 +13,17 @@ router.get("/users/:userId", (req, res, next) => {
     const { userId } = req.params;
   
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      res.status(400).json({ message: "Specified user id number is not valid" });
-      return;
+        res.status(400).json({ message: "Specified user id number is not valid" });
+        return;
     }
 
     User.findById(userId)
-      .then((user) => res.status(200).json(user))
-      .catch((err) => {
-        console.log("Error while retrieving the user", err);
-        res.status(500).json({ message: "Error while retrieving the user" });
-      });
+        .populate("comments")
+        .then((user) => res.status(200).json(user))
+        .catch((err) => {
+            console.log("Error while retrieving the user", err);
+            res.status(500).json({ message: "Error while retrieving the user" });
+        });
   });
 
 /*-----PUT UPDATE USER PAGE-----*/
@@ -32,16 +33,16 @@ router.put("/users/:userId", (req, res, next) => {
     const { avatarUrl } = req.body;
   
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      res.status(400).json({ message: "Specified user id number is not valid" });
-      return;
+        res.status(400).json({ message: "Specified user id number is not valid" });
+        return;
     }
   
     User.findByIdAndUpdate(userId, avatarUrl, { new: true })
-      .then((updatedUser) => res.json(updatedUser))
-      .catch((err) => {
-        console.log("Error while updating the user", err);
-        res.status(500).json({ message: "Error while updating the user" });
-      });
+        .then((updatedUser) => res.json(updatedUser))
+        .catch((err) => {
+            console.log("Error while updating the user", err);
+            res.status(500).json({ message: "Error while updating the user" });
+        });
   });
 
 module.exports = router;
