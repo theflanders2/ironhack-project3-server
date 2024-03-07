@@ -6,7 +6,7 @@ const userSchema = new Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   prestigeLevel: { type: String, default: "Recently discovered gaming." },
-  avatar: { type: String, default: "" },
+  avatarUrl: { type: String, default: "" },
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
   gamesContributed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
   gamesPlayed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
