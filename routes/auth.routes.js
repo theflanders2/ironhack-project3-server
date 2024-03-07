@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 // ********* require USER model in order to use it *********
 const User = require("../models/User.model");
 
+// ********* require isAuthenticated in order to use it and protect routes *********
 const { isAuthenticated } = require("../middleware/jwt.middleware")
 
 const saltRounds = 10;
@@ -123,6 +124,19 @@ router.post('/login', (req, res, next) => {
    
       })
       .catch(err => res.status(500).json({ message: "Internal Server Error" }));
+  });
+
+/*-----GET VERIFY PAGE-----*/
+// full path: /auth/verify
+router.get('/verify', isAuthenticated, (req, res, next) => {
+ 
+    // If JWT token is valid the payload gets decoded by the
+    // isAuthenticated middleware and made available on `req.payload`
+    console.log(`req.payload`, req.payload);
+   
+    // Send back the object with user data
+    // previously set as the token payload
+    res.status(200).json(req.payload);
   });
 
   module.exports = router;
