@@ -17,7 +17,7 @@ router.post('/signup', (req, res, next) => {
    
     // Check if the username, password or email is provided as an empty string 
     if (username === '' || password === '' || email === '') {
-        res.status(400).json({ message: "Provide username, password and email address" });
+        res.status(400).json({ message: "Please provide username, password and email address" });
         return;
     }
     
@@ -36,12 +36,7 @@ router.post('/signup', (req, res, next) => {
             res.status(400).json({ message: "Unable to create an account with this email address. Please provide a different email address." });
             return;
             }
-            // .catch(err => {
-            //     console.log(err);
-            //     res.status(500).json({ message: "Internal Server Error" })
-            // });
         });
-   
    
     // Check the users collection if a user with the same username already exists
     User.findOne({ username })
