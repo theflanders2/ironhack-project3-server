@@ -20,16 +20,23 @@ router.get("/users/:userId", (req, res, next) => {
     }
 
     User.findById(userId)
-        // .populate("comments")
-        .then((foundUser) => res.status(200).json(foundUser))
+        .populate("comments")
+        .then((foundUser) => {
+            // Deconstruct found user object to omit the password
+            // We should never expose passwords publicly
+            const { _id, username, email, prestigeLevel, avatarUrl, comments, gamesContributed, gamesPlayed, gamesCurrentlyPlaying, wishlist } = foundUser;
+      
+            // Create a new object that doesn't expose the password
+            const reconstructedFoundUser = { _id, username, email, prestigeLevel, avatarUrl, comments, gamesContributed, gamesPlayed, gamesCurrentlyPlaying, wishlist };
+   
+            // Send a json response containing the user object
+            res.status(200).json({ user: reconstructedFoundUser })
+        })
         .catch((err) => {
             console.log("Error while retrieving the user", err);
             res.status(500).json({ message: "Error while retrieving the user" });
         });
   });
-
-/*-----GET FIND USER WISHLIST PAGE-----*/
-// ADD CODE HERE
 
 /*-----PUT UPDATE USER PAGE-----*/
 // full path: /api/users/:userId  -  Updates a specific user by id
@@ -49,5 +56,13 @@ router.put("/users/:userId", (req, res, next) => {
             res.status(500).json({ message: "Error while updating the user" });
         });
   });
+
+/*-----GET FIND USER WISHLIST PAGE-----*/
+// full path: /api/users/:userId/wishlist  -  Retrieves a user's wishlist
+// ADD CODE HERE
+
+/*-----PUT UPDATE USER WISHLIST PAGE-----*/
+// full path: /api/users/:userId/wishlist  -  Updates a user's wishlist
+// ADD CODE HERE
 
 module.exports = router;
