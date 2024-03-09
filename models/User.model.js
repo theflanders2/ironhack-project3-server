@@ -7,7 +7,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   prestigeLevel: { type: String, default: "Recently discovered gaming." },
   avatarUrl: { type: String, default: "" },
-  comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
+  // comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
   gamesContributed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
   gamesPlayed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
   gamesCurrentlyPlaying: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
