@@ -1,8 +1,10 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 
-// ********* require USER model in order to use it *********
+// ********* require User, Game and Comment models in order to use them *********
 const User = require("../models/User.model");
+const Game = require("../models/Game.model");
+const Comment = require ("../models/Comment.model");
 
 // ********* require fileUploader in order to use it *********
 const fileUploader = require("../config/cloudinary.config");
@@ -18,13 +20,16 @@ router.get("/users/:userId", (req, res, next) => {
     }
 
     User.findById(userId)
-        .populate("comments")
-        .then((user) => res.status(200).json(user))
+        // .populate("comments")
+        .then((foundUser) => res.status(200).json(foundUser))
         .catch((err) => {
             console.log("Error while retrieving the user", err);
             res.status(500).json({ message: "Error while retrieving the user" });
         });
   });
+
+/*-----GET FIND USER WISHLIST PAGE-----*/
+// ADD CODE HERE
 
 /*-----PUT UPDATE USER PAGE-----*/
 // full path: /api/users/:userId  -  Updates a specific user by id
