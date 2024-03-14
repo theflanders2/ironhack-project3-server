@@ -88,23 +88,173 @@ router.get("/games/:gameId", (req, res, next) => {
 
 /*-----POST COMMENT ON SINGLE GAME PAGE-----*/ 
 // full path: /api/games/:gameId -  Retrieves a specific game by id
-router.post("/games/:gameId", (req, res, next) => {
+router.post("/games/:gameId", isAuthenticated, (req, res, next) => {
   const { content } = req.body;
   const { gameId } = req.params;
   const game = gameId;
   const author = req.payload._id;
 
   Comment.create({ game, author, content })
-  .then(async (newComment) => {
-    // console.log ('newComment:', newComment)
-    await Game.findByIdAndUpdate(game, { $push: { comments: newComment._id } })
-    await User.findByIdAndUpdate(author, { $push: { comments: newComment._id } })
-    res.status(201).json(newComment)
-  })
-  .catch((err) => {
-    console.log('Error while retrieving game', err);
-    res.status(500).json({ message: "Error while retrieving game" });
-  });
+    .then(async (newComment) => {
+      // console.log('newComment:', newComment)
+      await Game.findByIdAndUpdate(game, { $push: { comments: newComment._id } })
+      await User.findByIdAndUpdate(author, { $push: { comments: newComment._id } })
+      res.status(201).json(newComment)
+    })
+    .catch((err) => {
+      console.log('Error while retrieving game', err);
+      res.status(500).json({ message: "Error while retrieving game" });
+    });
+});
+
+/*-----GET ALL GAMES PAGE-----*/
+// full path: /api/games -  Retrieves all games
+router.get("/games/games-contributed", (req, res, next) => {
+  Game.find()
+    .then((allGames) => res.json(allGames))
+    .catch((err) => {
+      console.log("Error while getting all games", err);
+      res.status(500).json({ message: "Error while getting all games" });
+    });
+});
+
+/*-----ADD EXISTING GAME TO GAMES PLAYED LIST-----*/ 
+// full path: /api/games/:gameId -  Retrieves a specific game by id
+router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
+  const { played } = req.body;
+  const { gameId } = req.params;
+  
+  if (played === "yes") {
+    User.findById(req.payload._id)
+      .then((foundUser) => {
+        // console.log('foundUser.gamesPlayed:', foundUser.gamesPlayed);
+        if (foundUser.gamesPlayed.includes(gameId)){ // Check is game is already on user's gamesPlayed list
+          res.status(400).json({ message: "Unable to add game to gamesPlayed list. Game is already on list." });
+          return;
+        }
+      });
+
+    Game.findById(gameId)
+      .then(async (foundGame) => {
+        // console.log ('foundGame:', foundGame)
+        await User.findByIdAndUpdate(req.payload._id, { $push: { gamesPlayed: foundGame._id } })
+        console.log(`Successfully added ${foundGame.name} to gamesPlayed list.`)
+        res.status(200).json(foundGame)
+      })
+      .catch((err) => {
+        console.log('Error adding game to list', err);
+        res.status(500).json({ message: "Error adding game to list" });
+      });
+  }
+
+  if (currentlyPlaying === "yes") {
+    User.findById(req.payload._id)
+      .then((foundUser) => {
+        // console.log('foundUser.gamesCurrentlyPlaying:', foundUser.gamesCurrentlyPlaying);
+        if (foundUser.gamesCurrentlyPlaying.includes(gameId)){ // Check is game is already on user's gamesPlayed list
+          res.status(400).json({ message: "Unable to add game to gamesCurrentlyPlaying list. Game is already on list." });
+          return;
+        }
+      });
+
+    Game.findById(gameId)
+      .then(async (foundGame) => {
+        // console.log ('foundGame:', foundGame)
+        await User.findByIdAndUpdate(req.payload._id, { $push: { gamesCurrentlyPlaying: foundGame._id } })
+        console.log(`Successfully added ${foundGame.name} to gamesCurrentlyPlaying list.`)
+        res.status(200).json(foundGame)
+      })
+      .catch((err) => {
+        console.log('Error adding game to list', err);
+        res.status(500).json({ message: "Error adding game to list" });
+      });
+  }
+
+  if (wishlist === "yes") {
+    User.findById(req.payload._id)
+      .then((foundUser) => {
+        // console.log('foundUser.wishlist:', foundUser.wishlist);
+        if (foundUser.wishlist.includes(gameId)){ // Check is game is already on user's gamesPlayed list
+          res.status(400).json({ message: "Unable to add game to wishlist. Game is already on list." });
+          return;
+        }
+      });
+
+    Game.findById(gameId)
+      .then(async (foundGame) => {
+        // console.log ('foundGame:', foundGame)
+        await User.findByIdAndUpdate(req.payload._id, { $push: { wishlist: foundGame._id } })
+        console.log(`Successfully added ${foundGame.name} to wishlist list.`)
+        res.status(200).json(foundGame)
+      })
+      .catch((err) => {
+        console.log('Error adding game to list', err);
+        res.status(500).json({ message: "Error adding game to list" });
+      });
+  }
+  
+});
+
+/*-----ADD EXISTING GAME TO GAMES CURRENTLY PLAYING LIST-----*/ 
+// full path: /api/games/:gameId -  Retrieves a specific game by id
+router.put("/games/:gameId/games-currently-playing", isAuthenticated, (req, res, next) => {
+  const { currentlyPlaying } = req.body;
+  const { gameId } = req.params;
+
+  if (currentlyPlaying === "yes") {
+    User.findById(req.payload._id)
+      .then((foundUser) => {
+        // console.log('foundUser.gamesCurrentlyPlaying:', foundUser.gamesCurrentlyPlaying);
+        if (foundUser.gamesCurrentlyPlaying.includes(gameId)){ // Check is game is already on user's gamesPlayed list
+          res.status(400).json({ message: "Unable to add game to gamesCurrentlyPlaying list. Game is already on list." });
+          return;
+        }
+      });
+
+    Game.findById(gameId)
+      .then(async (foundGame) => {
+        // console.log ('foundGame:', foundGame)
+        await User.findByIdAndUpdate(req.payload._id, { $push: { gamesCurrentlyPlaying: foundGame._id } })
+        console.log(`Successfully added ${foundGame.name} to gamesCurrentlyPlaying list.`)
+        res.status(200).json(foundGame)
+      })
+      .catch((err) => {
+        console.log('Error adding game to list', err);
+        res.status(500).json({ message: "Error adding game to list" });
+      });
+  }
+  
+});
+
+/*-----ADD EXISTING GAME TO WISHLIST-----*/ 
+// full path: /api/games/:gameId -  Retrieves a specific game by id
+router.put("/games/:gameId/wishlist", isAuthenticated, (req, res, next) => {
+  const { wishlist } = req.body;
+  const { gameId } = req.params;
+  
+  if (wishlist === "yes") {
+    User.findById(req.payload._id)
+      .then((foundUser) => {
+        // console.log('foundUser.wishlist:', foundUser.wishlist);
+        if (foundUser.wishlist.includes(gameId)){ // Check is game is already on user's gamesPlayed list
+          res.status(400).json({ message: "Unable to add game to wishlist. Game is already on list." });
+          return;
+        }
+      });
+
+    Game.findById(gameId)
+      .then(async (foundGame) => {
+        // console.log ('foundGame:', foundGame)
+        await User.findByIdAndUpdate(req.payload._id, { $push: { wishlist: foundGame._id } })
+        console.log(`Successfully added ${foundGame.name} to wishlist.`)
+        res.status(200).json(foundGame)
+      })
+      .catch((err) => {
+        console.log('Error adding game to list', err);
+        res.status(500).json({ message: "Error adding game to list" });
+      });
+  }
+  
 });
 
 module.exports = router;

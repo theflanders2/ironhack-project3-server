@@ -21,6 +21,10 @@ router.get("/users/:userId", (req, res, next) => {
 
     User.findById(userId)
         .populate("comments")
+        .populate("gamesContributed")
+        .populate("gamesPlayed")
+        .populate("gamesCurrentlyPlaying")
+        .populate("wishlist")
         .then((foundUser) => {
             // Deconstruct found user object to omit the password
             // We should never expose passwords publicly
