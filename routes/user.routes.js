@@ -9,6 +9,17 @@ const Comment = require ("../models/Comment.model");
 // ********* require fileUploader in order to use it *********
 const fileUploader = require("../config/cloudinary.config");
 
+/*-----GET ALL USERS-----*/
+// full path: /api/users -  Retrieves all users
+router.get("/users", (req, res, next) => {
+    User.find()
+      .then((allUsers) => res.status(200).json(allUsers))
+      .catch((err) => {
+        console.log("Error getting all users", err);
+        res.status(500).json({ message: "Error getting all users" });
+      });
+  });
+
 /*-----GET FIND USER PAGE-----*/
 // full path: /api/users/:userId -  Retrieves a specific user by id
 router.get("/users/:userId", (req, res, next) => {
