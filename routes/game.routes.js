@@ -107,22 +107,16 @@ router.post("/games/:gameId", isAuthenticated, (req, res, next) => {
     });
 });
 
-/*-----GET ALL GAMES PAGE-----*/
-// full path: /api/games -  Retrieves all games
-router.get("/games/games-contributed", (req, res, next) => {
-  Game.find()
-    .then((allGames) => res.json(allGames))
-    .catch((err) => {
-      console.log("Error while getting all games", err);
-      res.status(500).json({ message: "Error while getting all games" });
-    });
-});
-
 /*-----ADD EXISTING GAME TO GAMES PLAYED LIST-----*/ 
-// full path: /api/games/:gameId -  Retrieves a specific game by id
+// full path: /api/games/:gameId/games-played -  Adds a specific game by id
 router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
   const { played } = req.body;
   const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
   
   if (played === "yes") {
     User.findById(req.payload._id)
@@ -195,11 +189,38 @@ router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
   
 });
 
+/*-----DELETE GAME FROM GAMES PLAYED LIST-----*/
+// full path: /api/games/:gameId/games-played  -  Deletes a specific game by id
+router.delete("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
+  const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Project.findByIdAndRemove(gameId)
+    .then(() =>
+      res.json({
+        message: `Project with ${gameId} is removed successfully.`,
+      })
+    )
+    .catch((err) => {
+      console.log("Error while deleting the project", err);
+      res.status(500).json({ message: "Error while deleting the project" });
+    });
+});
+
 /*-----ADD EXISTING GAME TO GAMES CURRENTLY PLAYING LIST-----*/ 
-// full path: /api/games/:gameId -  Retrieves a specific game by id
+// full path: /api/games/:gameId/games-currently-playing -  Adds a specific game by id
 router.put("/games/:gameId/games-currently-playing", isAuthenticated, (req, res, next) => {
   const { currentlyPlaying } = req.body;
   const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
 
   if (currentlyPlaying === "yes") {
     User.findById(req.payload._id)
@@ -227,10 +248,15 @@ router.put("/games/:gameId/games-currently-playing", isAuthenticated, (req, res,
 });
 
 /*-----ADD EXISTING GAME TO WISHLIST-----*/ 
-// full path: /api/games/:gameId -  Retrieves a specific game by id
+// full path: /api/games/:gameId/wishlist -  Adds a specific game by id
 router.put("/games/:gameId/wishlist", isAuthenticated, (req, res, next) => {
   const { wishlist } = req.body;
   const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
   
   if (wishlist === "yes") {
     User.findById(req.payload._id)
