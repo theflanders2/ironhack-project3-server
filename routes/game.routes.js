@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 // ********* require User, Game and Comment models in order to use them *********
 const User = require("../models/User.model");
 const Game = require("../models/Game.model");
-const Comment = require ("../models/Comment.model");
 
 // ********* require isAuthenticated in order to use it and protect routes *********
 const { isAuthenticated } = require("../middleware/jwt.middleware")
@@ -83,27 +82,6 @@ router.post("/games", isAuthenticated, /*fileUploader.single("imageUrl"),*/ (req
     .catch((err) => {
       console.log("Error while adding new game", err);
       res.status(500).json({ message: "Error while adding new game" });
-    });
-});
-
-/*-----POST COMMENT ON SINGLE GAME-----*/ 
-// full path: /api/games/:gameId -  Retrieves a specific game by id
-router.post("/games/:gameId", isAuthenticated, (req, res, next) => {
-  const { content } = req.body;
-  const { gameId } = req.params;
-  const game = gameId;
-  const author = req.payload._id;
-
-  Comment.create({ game, author, content })
-    .then(async (newComment) => {
-      // console.log('newComment:', newComment)
-      await Game.findByIdAndUpdate(game, { $push: { comments: newComment._id } })
-      await User.findByIdAndUpdate(author, { $push: { comments: newComment._id } })
-      res.status(201).json(newComment)
-    })
-    .catch((err) => {
-      console.log('Error while retrieving game', err);
-      res.status(500).json({ message: "Error while retrieving game" });
     });
 });
 
