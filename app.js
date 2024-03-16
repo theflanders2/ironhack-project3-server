@@ -31,7 +31,7 @@ const gameRoutes = require("./routes/game.routes");
 app.use("/api", gameRoutes);
 
 const commentRoutes = require("./routes/comment.routes");
-app.use("/api", gameRoutes);
+app.use("/api", isAuthenticated, commentRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
