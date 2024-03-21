@@ -108,6 +108,24 @@ router.post(
   }
 );
 
+/*-----PUT UPDATE EXISTING GAME-----*/
+// full path: /api/games/:gameId -  Updates a specific game by id
+router.put("/games/:gameId", (req, res, next) => {
+  const { gameId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
+    res.status(400).json({ message: "Specified id is not valid" });
+    return;
+  }
+
+  Game.findByIdAndUpdate(gameId, req.body, { new: true })
+    .then((updatedGame) => res.json(updatedGame))
+    .catch((err) => {
+      console.log("Error while updating the game", err);
+      res.status(500).json({ message: "Error while updating the game" });
+    });
+});
+
 /*-----ADD EXISTING GAME TO GAMES PLAYED LIST-----*/
 // full path: /api/games/:gameId/games-played -  Adds a specific game by id
 router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
