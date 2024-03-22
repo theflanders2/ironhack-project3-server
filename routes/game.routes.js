@@ -14,7 +14,7 @@ const fileUploader = require("../config/cloudinary.config");
 /*-----GET ALL GAMES-----*/
 // full path: /api/games -  Retrieves all games
 router.get("/games", (req, res, next) => {
-  Game.find()
+  Game.find().sort({name: 1})
     .then((allGames) => res.json(allGames))
     .catch((err) => {
       console.log("Error while getting all games", err);
@@ -49,10 +49,7 @@ router.get("/games/:gameId", (req, res, next) => {
 
 /*-----POST ADD NEW GAME-----*/
 // full path: /api/games  -  Adds a new game
-router.post(
-  "/games",
-  isAuthenticated,
-  /*fileUploader.single("imageUrl"),*/ (req, res, next) => {
+router.post("/games", isAuthenticated, /*fileUploader.single("imageUrl"),*/ (req, res, next) => {
     const { name, releaseYear, genre, platform } = req.body;
     // Use req.payload to retrieve information of logged in user
     const userId = req.payload._id;
