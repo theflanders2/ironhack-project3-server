@@ -82,14 +82,13 @@ router.get("/users/:userId", (req, res, next) => {
 // full path: /api/users/:userId  -  Updates a specific user by id
 router.put("/users/:userId", (req, res, next) => {
   const { userId } = req.params;
-  const { avatarUrl } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     res.status(400).json({ message: "Specified user id number is not valid" });
     return;
   }
 
-  User.findByIdAndUpdate(userId, avatarUrl, { new: true })
+  User.findByIdAndUpdate(userId, req.body, { new: true })
     .then((updatedUser) => res.json(updatedUser))
     .catch((err) => {
       console.log("Error while updating the user", err);
