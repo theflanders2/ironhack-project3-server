@@ -24,7 +24,7 @@ router.post('/signup', (req, res, next) => {
     // Use regex to validate the password format
     const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
     if (!passwordRegex.test(password)) {
-        res.status(400).json({ message: 'Password must have at least 8 characters and contain at least one number, one lowercase and one uppercase letter.' });
+        res.status(400).json({ message: 'Password must have at least 8 characters and contain at least one number, one lowercase and one uppercase letter' });
         return;
     }
 
@@ -43,7 +43,7 @@ router.post('/signup', (req, res, next) => {
         .then((foundUser) => {
             // If a user with the same username already exists, send an error message
             if (foundUser) {
-            res.status(400).json({ message: "User already exists. Please provide a different username." });
+            res.status(400).json({ message: "User already exists. Please provide a different username" });
             return;
             }
    
@@ -79,7 +79,7 @@ router.post('/login', (req, res, next) => {
    
     // Check if email or password are provided as empty string 
     if (email === '' || password === '') {
-        res.status(400).json({ message: "Provide an email address and password." });
+        res.status(400).json({ message: "Provide an email address and password" });
         return;
     }
    
@@ -89,7 +89,7 @@ router.post('/login', (req, res, next) => {
       
             if (!foundUser) {
             // If the user is not found, send an error response
-            res.status(401).json({ message: "User not found." })
+            res.status(401).json({ message: "User not found" })
             return;
             }
    
