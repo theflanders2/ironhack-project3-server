@@ -124,7 +124,7 @@ router.post("/games", isAuthenticated, (req, res, next) => {
 
 /*-----PUT UPDATE EXISTING GAME-----*/
 // full path: /api/games/:gameId -  Updates a specific game by id
-router.put("/games/:gameId", (req, res, next) => {
+router.put("/games/:gameId", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -133,7 +133,7 @@ router.put("/games/:gameId", (req, res, next) => {
   }
 
   Game.findByIdAndUpdate(gameId, req.body, { new: true })
-    .then((updatedGame) => res.json(updatedGame))
+    .then((updatedGame) => res.status(200).json(updatedGame))
     .catch((err) => {
       console.log("Error while updating the game", err);
       res.status(500).json({ message: "Error while updating the game" });
