@@ -15,7 +15,7 @@ const fileUploader = require("../config/cloudinary.config");
 // full path: /api/games -  Retrieves all games
 router.get("/games", (req, res, next) => {
   Game.find().sort({name: 1})
-    .then((allGames) => res.json(allGames))
+    .then((allGames) => res.status(200).json(allGames))
     .catch((err) => {
       console.log("Error while getting all games", err);
       res.status(500).json({ message: "Error while getting all games" });
@@ -24,7 +24,7 @@ router.get("/games", (req, res, next) => {
 
 /*-----GET SINGLE GAME-----*/
 // full path: /api/games/:gameId -  Retrieves a specific game by id
-router.get("/games/:gameId", (req, res, next) => {
+router.get("/games/:gameId", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -47,10 +47,26 @@ router.get("/games/:gameId", (req, res, next) => {
     });
 });
 
+/*-----POST GAME COVER ART-----*/
+// full path: "/api/games/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+router.post("/games/upload", isAuthenticated, fileUploader.single("coverArtUrl"), (req, res, next) => {
+  // console.log("file is: ", req.file)
+ 
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  
+  // Get the URL of the uploaded file and send it as a response.
+  // 'coverArtUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+  
+  res.status(200).json({ coverArtUrl: req.file.path });
+});
+
 /*-----POST ADD NEW GAME-----*/
 // full path: /api/games  -  Adds a new game
-router.post("/games", isAuthenticated, /*fileUploader.single("imageUrl"),*/ (req, res, next) => {
-    const { name, releaseYear, genre, platform } = req.body;
+router.post("/games", isAuthenticated, (req, res, next) => {
+    const { name, releaseYear, genre, platform, coverArtUrl } = req.body;
     // Use req.payload to retrieve information of logged in user
     const userId = req.payload._id;
     const username = req.payload.username;
@@ -80,6 +96,7 @@ router.post("/games", isAuthenticated, /*fileUploader.single("imageUrl"),*/ (req
           releaseYear,
           genre,
           platform,
+          coverArtUrl,
           contributedById: userId,
           contributedByUser: username,
         });
