@@ -388,8 +388,8 @@ router.delete("/games/:gameId", isAuthenticated, (req, res, next) => {
   }
 
   Game.findByIdAndDelete(gameId)
-    .then(async () => {
-      const updatedUser = await User.findByIdAndUpdate(req.payload._id, {
+    .then(async (foundGame) => {
+      const updatedUser = await User.findByIdAndUpdate(foundGame.contributedById._id, {
         $pull: { gamesContributed: gameId },
       });
       // async/await + const updatedUser removes the game from the user's gameContributed property
