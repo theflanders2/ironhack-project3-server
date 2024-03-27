@@ -122,7 +122,7 @@ router.post("/games", isAuthenticated, (req, res, next) => {
   }
 );
 
-/*-----PUT UPDATE EXISTING GAME-----*/
+/*-----PUT UPDATE GAME-----*/
 // full path: /api/games/:gameId -  Updates a specific game by id
 router.put("/games/:gameId", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
@@ -140,10 +140,9 @@ router.put("/games/:gameId", isAuthenticated, (req, res, next) => {
     });
 });
 
-/*-----ADD EXISTING GAME TO GAMES PLAYED LIST-----*/
-// full path: /api/games/:gameId/games-played -  Adds a specific game by id
-router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
-  const { played } = req.body;
+/*-----ADD GAME TO GAMES PLAYED LIST-----*/
+// full path: /api/games/:gameId/add-to-games-played -  Adds a specific game by id
+router.put("/games/:gameId/add-to-games-played", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -151,45 +150,31 @@ router.put("/games/:gameId/games-played", isAuthenticated, (req, res, next) => {
     return;
   }
 
-  if (played === "yes") {
     User.findById(req.payload._id).then((foundUser) => {
       // console.log('foundUser.gamesPlayed:', foundUser.gamesPlayed);
       if (foundUser.gamesPlayed.includes(gameId)) {
-        // Check is game is already on user's gamesPlayed list
-        res
-          .status(400)
-          .json({
-            message:
-              "Unable to add game to gamesPlayed list. Game is already on list.",
-          });
+        // Check if game is already on user's gamesPlayed list
+        res.status(400).json({ message:"Already on games played list" });
         return;
       }
-    });
 
-    Game.findById(gameId)
-      .then(async (foundGame) => {
-        // console.log ('foundGame:', foundGame)
-        await User.findByIdAndUpdate(req.payload._id, {
-          $push: { gamesPlayed: foundGame._id },
+      Game.findById(gameId)
+        .then(async (foundGame) => {
+          // console.log ('foundGame:', foundGame)
+          await User.findByIdAndUpdate(req.payload._id, { $push: { gamesPlayed: foundGame._id }});
+          console.log(`Successfully added ${foundGame.name} to gamesPlayed list.`);
+          res.status(200).json(foundGame);
+        })
+        .catch((err) => {
+          console.log("Error adding game to list", err);
+          res.status(500).json({ message: "Error adding game to list" });
         });
-        console.log(
-          `Successfully added ${foundGame.name} to gamesPlayed list.`
-        );
-        res.status(200).json(foundGame);
-      })
-      .catch((err) => {
-        console.log("Error adding game to list", err);
-        res.status(500).json({ message: "Error adding game to list" });
-      });
-  }
+    });
 });
 
 /*-----REMOVE GAME FROM GAMES PLAYED LIST-----*/
-// full path: /api/games/:gameId/games-played/remove  -  Removes a specific game by id
-router.put(
-  "/games/:gameId/games-played/remove",
-  isAuthenticated,
-  (req, res, next) => {
+// full path: /api/games/:gameId/remove-from-games-played  -  Removes a specific game by id
+router.put("/games/:gameId/remove-from-games-played", isAuthenticated, (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -200,31 +185,19 @@ router.put(
     User.findByIdAndUpdate(req.payload._id, { $pull: { gamesPlayed: gameId } })
       // $pull removes value/item from array, removes gameID from array gamesPlayed array
       .then(() => {
-        console.log(
-          `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesPlayed list.`
-        );
-        res
-          .status(200)
-          .json({
-            message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesPlayed list.`,
-          });
+        console.log(`Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesPlayed list.`);
+        res.status(200).json({ message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesPlayed list.` });
       })
       .catch((err) => {
         console.log("Error removing game from gamesPlayed list", err);
-        res
-          .status(500)
-          .json({ message: "Error removig game from gamesPlayed list" });
+        res.status(500).json({ message: "Error removig game from gamesPlayed list" });
       });
   }
 );
 
 /*-----ADD EXISTING GAME TO GAMES CURRENTLY PLAYING LIST-----*/
-// full path: /api/games/:gameId/games-currently-playing -  Adds a specific game by id
-router.put(
-  "/games/:gameId/games-currently-playing",
-  isAuthenticated,
-  (req, res, next) => {
-    const { currentlyPlaying } = req.body;
+// full path: /api/games/:gameId/add-to-games-currently-playing -  Adds a specific game by id
+router.put("/games/:gameId/add-to-games-currently-playing", isAuthenticated, (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -232,46 +205,32 @@ router.put(
       return;
     }
 
-    if (currentlyPlaying === "yes") {
       User.findById(req.payload._id).then((foundUser) => {
         // console.log('foundUser.gamesCurrentlyPlaying:', foundUser.gamesCurrentlyPlaying);
         if (foundUser.gamesCurrentlyPlaying.includes(gameId)) {
           // Check is game is already on user's gamesPlayed list
-          res
-            .status(400)
-            .json({
-              message:
-                "Unable to add game to gamesCurrentlyPlaying list. Game is already on list.",
-            });
+          res.status(400).json({ message: "Already on games currently playing list" });
           return;
         }
-      });
 
-      Game.findById(gameId)
-        .then(async (foundGame) => {
-          // console.log ('foundGame:', foundGame)
-          await User.findByIdAndUpdate(req.payload._id, {
-            $push: { gamesCurrentlyPlaying: foundGame._id },
+        Game.findById(gameId)
+          .then(async (foundGame) => {
+            // console.log ('foundGame:', foundGame)
+            await User.findByIdAndUpdate(req.payload._id, { $push: { gamesCurrentlyPlaying: foundGame._id }});
+            console.log(`Successfully added ${foundGame.name} to gamesCurrentlyPlaying list.`);
+            res.status(200).json(foundGame);
+          })
+          .catch((err) => {
+            console.log("Error adding game to list", err);
+            res.status(500).json({ message: "Error adding game to list" });
           });
-          console.log(
-            `Successfully added ${foundGame.name} to gamesCurrentlyPlaying list.`
-          );
-          res.status(200).json(foundGame);
-        })
-        .catch((err) => {
-          console.log("Error adding game to list", err);
-          res.status(500).json({ message: "Error adding game to list" });
-        });
-    }
-  }
-);
+      });
+    
+});
 
 /*-----REMOVE GAME FROM GAMES CURRENTLY PLAYING LIST-----*/
-// full path: /api/games/:gameId/games-currently-playing/remove  -  Removes a specific game by id
-router.put(
-  "/games/:gameId/games-currently-playing/remove",
-  isAuthenticated,
-  (req, res, next) => {
+// full path: /api/games/:gameId/remove-from-games-currently-playing  -  Removes a specific game by id
+router.put("/games/:gameId/remove-from-games-currently-playing", isAuthenticated, (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -279,35 +238,22 @@ router.put(
       return;
     }
 
-    User.findByIdAndUpdate(req.payload._id, {
-      $pull: { gamesCurrentlyPlaying: gameId },
-    })
+    User.findByIdAndUpdate(req.payload._id, { $pull: { gamesCurrentlyPlaying: gameId }})
       // $pull removes value/item from array, removes gameID from array gamesCurrentlyPlaying array
       .then(() => {
-        console.log(
-          `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesCurrentlyPlaying list.`
-        );
-        res
-          .status(200)
-          .json({
-            message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesCurrentlyPlaying list.`,
-          });
+        console.log(`Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesCurrentlyPlaying list.`);
+        res.status(200).json({ message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s gamesCurrentlyPlaying list.` });
       })
       .catch((err) => {
         console.log("Error removing game from gamesCurrentlyPlaying list", err);
-        res
-          .status(500)
-          .json({
-            message: "Error removig game from gamesCurrentlyPlaying list",
-          });
+        res.status(500).json({ message: "Error removig game from gamesCurrentlyPlaying list" });
       });
   }
 );
 
 /*-----ADD EXISTING GAME TO WISHLIST-----*/
-// full path: /api/games/:gameId/wishlist -  Adds a specific game by id
-router.put("/games/:gameId/wishlist", isAuthenticated, (req, res, next) => {
-  const { wishlist } = req.body;
+// full path: /api/games/:gameId/add-to-wishlist -  Adds a specific game by id
+router.put("/games/:gameId/add-to-wishlist", isAuthenticated, (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -315,42 +261,31 @@ router.put("/games/:gameId/wishlist", isAuthenticated, (req, res, next) => {
     return;
   }
 
-  if (wishlist === "yes") {
     User.findById(req.payload._id).then((foundUser) => {
       // console.log('foundUser.wishlist:', foundUser.wishlist);
       if (foundUser.wishlist.includes(gameId)) {
         // Check is game is already on user's gamesPlayed list
-        res
-          .status(400)
-          .json({
-            message: "Unable to add game to wishlist. Game is already on list.",
-          });
+        res.status(400).json({ message: "Already on wishlist" });
         return;
       }
-    });
 
-    Game.findById(gameId)
-      .then(async (foundGame) => {
-        // console.log ('foundGame:', foundGame)
-        await User.findByIdAndUpdate(req.payload._id, {
-          $push: { wishlist: foundGame._id },
+      Game.findById(gameId)
+        .then(async (foundGame) => {
+          // console.log ('foundGame:', foundGame)
+          await User.findByIdAndUpdate(req.payload._id, { $push: { wishlist: foundGame._id }});
+          console.log(`Successfully added ${foundGame.name} to wishlist.`);
+          res.status(200).json(foundGame);
+        })
+        .catch((err) => {
+          console.log("Error adding game to list", err);
+          res.status(500).json({ message: "Error adding game to list" });
         });
-        console.log(`Successfully added ${foundGame.name} to wishlist.`);
-        res.status(200).json(foundGame);
-      })
-      .catch((err) => {
-        console.log("Error adding game to list", err);
-        res.status(500).json({ message: "Error adding game to list" });
-      });
-  }
+    });
 });
 
 /*-----REMOVE GAME FROM WISHLIST-----*/
-// full path: /api/games/:gameId/wishlist/remove -  Removes a specific game by id
-router.put(
-  "/games/:gameId/wishlist/remove",
-  isAuthenticated,
-  (req, res, next) => {
+// full path: /api/games/:gameId/remove-from-wishlist -  Removes a specific game by id
+router.put("/games/:gameId/remove-from-wishlist", isAuthenticated,(req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -361,14 +296,8 @@ router.put(
     User.findByIdAndUpdate(req.payload._id, { $pull: { wishlist: gameId } })
       // $pull removes value/item from array, removes gameID from array wishlist array
       .then(() => {
-        console.log(
-          `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s wishlist.`
-        );
-        res
-          .status(200)
-          .json({
-            message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s wishlist.`,
-          });
+        console.log(`Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s wishlist.`);
+        res.status(200).json({ message: `Game with ID ${gameId} has been successfully removed from ${req.payload.username}'s wishlist.`});
       })
       .catch((err) => {
         console.log("Error removing game from wishlist", err);
@@ -379,34 +308,28 @@ router.put(
 
 /*-----DELETE GAME FROM DATABASE AND REMOVE FROM USER'S GAMES CONTRIBUTED LIST-----*/
 // full path: /api/games/:gameId  -  Deletes a specific game by id
-router.delete("/games/:gameId", isAuthenticated, (req, res, next) => {
-  const { gameId } = req.params;
+// router.delete("/games/:gameId", isAuthenticated, (req, res, next) => {
+//   const { gameId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(gameId)) {
-    res.status(400).json({ message: "Specified id is not valid" });
-    return;
-  }
+//   if (!mongoose.Types.ObjectId.isValid(gameId)) {
+//     res.status(400).json({ message: "Specified id is not valid" });
+//     return;
+//   }
 
-  Game.findByIdAndDelete(gameId)
-    .then(async (foundGame) => {
-      const updatedUser = await User.findByIdAndUpdate(foundGame.contributedById._id, {
-        $pull: { gamesContributed: gameId },
-      });
-      // async/await + const updatedUser removes the game from the user's gameContributed property
-      // $pull removes value/item from array, removes gameID from array gamesContributed array
-      console.log(
-        `Game with ID ${gameId} has been successfully removed from the game database and user ${req.payload._id}'s "gamesContributed" list.`
-      );
-      res
-        .status(200)
-        .json({
-          message: `Game with ID ${gameId} has been successfully removed from the game database.`,
-        });
-    })
-    .catch((err) => {
-      console.log("Error deleting game", err);
-      res.status(500).json({ message: "Error deleting game" });
-    });
-});
+//   Game.findByIdAndDelete(gameId)
+//     .then(async (foundGame) => {
+//       const updatedUser = await User.findByIdAndUpdate(foundGame.contributedById._id, {
+//         $pull: { gamesContributed: gameId },
+//       });
+//       // async/await + const updatedUser removes the game from the user's gameContributed property
+//       // $pull removes value/item from array, removes gameID from array gamesContributed array
+//       console.log(`Game with ID ${gameId} has been successfully removed from the game database and user ${req.payload._id}'s "gamesContributed" list.`);
+//       res.status(200).json({ message: `Game with ID ${gameId} has been successfully removed from the game database.`});
+//     })
+//     .catch((err) => {
+//       console.log("Error deleting game", err);
+//       res.status(500).json({ message: "Error deleting game" });
+//     });
+// });
 
 module.exports = router;
