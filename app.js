@@ -28,7 +28,7 @@ const userRoutes = require("./routes/user.routes");
 app.use("/api", isAuthenticated, userRoutes);
 
 const gameRoutes = require("./routes/game.routes");
-app.use("/api", gameRoutes);
+app.use("/api", isAuthenticated, gameRoutes);
 
 const commentRoutes = require("./routes/comment.routes");
 app.use("/api", isAuthenticated, commentRoutes);

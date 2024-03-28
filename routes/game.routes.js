@@ -5,9 +5,6 @@ const mongoose = require("mongoose");
 const User = require("../models/User.model");
 const Game = require("../models/Game.model");
 
-// ********* require isAuthenticated in order to use it and protect routes *********
-const { isAuthenticated } = require("../middleware/jwt.middleware");
-
 // ********* require fileUploader in order to use it *********
 const fileUploader = require("../config/cloudinary.config");
 
@@ -24,7 +21,7 @@ router.get("/games", (req, res, next) => {
 
 /*-----GET SINGLE GAME-----*/
 // full path: /api/games/:gameId -  Retrieves a specific game by id
-router.get("/games/:gameId", isAuthenticated, (req, res, next) => {
+router.get("/games/:gameId", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -49,7 +46,7 @@ router.get("/games/:gameId", isAuthenticated, (req, res, next) => {
 
 /*-----POST GAME COVER ART-----*/
 // full path: "/api/games/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
-router.post("/games/upload", isAuthenticated, fileUploader.single("coverArtUrl"), (req, res, next) => {
+router.post("/games/upload", fileUploader.single("coverArtUrl"), (req, res, next) => {
   // console.log("file is: ", req.file)
  
   if (!req.file) {
@@ -65,7 +62,7 @@ router.post("/games/upload", isAuthenticated, fileUploader.single("coverArtUrl")
 
 /*-----POST ADD NEW GAME-----*/
 // full path: /api/games  -  Adds a new game
-router.post("/games", isAuthenticated, (req, res, next) => {
+router.post("/games", (req, res, next) => {
     const { name, releaseYear, genre, platform, coverArtUrl } = req.body;
     // Use req.payload to retrieve information of logged in user
     const userId = req.payload._id;
@@ -124,7 +121,7 @@ router.post("/games", isAuthenticated, (req, res, next) => {
 
 /*-----PUT UPDATE GAME-----*/
 // full path: /api/games/:gameId -  Updates a specific game by id
-router.put("/games/:gameId", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -142,7 +139,7 @@ router.put("/games/:gameId", isAuthenticated, (req, res, next) => {
 
 /*-----ADD GAME TO GAMES PLAYED LIST-----*/
 // full path: /api/games/:gameId/add-to-games-played -  Adds a specific game by id
-router.put("/games/:gameId/add-to-games-played", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId/add-to-games-played", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -174,7 +171,7 @@ router.put("/games/:gameId/add-to-games-played", isAuthenticated, (req, res, nex
 
 /*-----REMOVE GAME FROM GAMES PLAYED LIST-----*/
 // full path: /api/games/:gameId/remove-from-games-played  -  Removes a specific game by id
-router.put("/games/:gameId/remove-from-games-played", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId/remove-from-games-played", (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -197,7 +194,7 @@ router.put("/games/:gameId/remove-from-games-played", isAuthenticated, (req, res
 
 /*-----ADD EXISTING GAME TO GAMES CURRENTLY PLAYING LIST-----*/
 // full path: /api/games/:gameId/add-to-games-currently-playing -  Adds a specific game by id
-router.put("/games/:gameId/add-to-games-currently-playing", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId/add-to-games-currently-playing", (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -230,7 +227,7 @@ router.put("/games/:gameId/add-to-games-currently-playing", isAuthenticated, (re
 
 /*-----REMOVE GAME FROM GAMES CURRENTLY PLAYING LIST-----*/
 // full path: /api/games/:gameId/remove-from-games-currently-playing  -  Removes a specific game by id
-router.put("/games/:gameId/remove-from-games-currently-playing", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId/remove-from-games-currently-playing", (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -253,7 +250,7 @@ router.put("/games/:gameId/remove-from-games-currently-playing", isAuthenticated
 
 /*-----ADD EXISTING GAME TO WISHLIST-----*/
 // full path: /api/games/:gameId/add-to-wishlist -  Adds a specific game by id
-router.put("/games/:gameId/add-to-wishlist", isAuthenticated, (req, res, next) => {
+router.put("/games/:gameId/add-to-wishlist", (req, res, next) => {
   const { gameId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -285,7 +282,7 @@ router.put("/games/:gameId/add-to-wishlist", isAuthenticated, (req, res, next) =
 
 /*-----REMOVE GAME FROM WISHLIST-----*/
 // full path: /api/games/:gameId/remove-from-wishlist -  Removes a specific game by id
-router.put("/games/:gameId/remove-from-wishlist", isAuthenticated,(req, res, next) => {
+router.put("/games/:gameId/remove-from-wishlist", (req, res, next) => {
     const { gameId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(gameId)) {
@@ -308,7 +305,7 @@ router.put("/games/:gameId/remove-from-wishlist", isAuthenticated,(req, res, nex
 
 /*-----DELETE GAME FROM DATABASE AND REMOVE FROM USER'S GAMES CONTRIBUTED LIST-----*/
 // full path: /api/games/:gameId  -  Deletes a specific game by id
-// router.delete("/games/:gameId", isAuthenticated, (req, res, next) => {
+// router.delete("/games/:gameId", (req, res, next) => {
 //   const { gameId } = req.params;
 
 //   if (!mongoose.Types.ObjectId.isValid(gameId)) {
