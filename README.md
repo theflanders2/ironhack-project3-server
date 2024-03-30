@@ -22,10 +22,12 @@ Logged in users can:
 - Delete own comments
 - Edit profile
 
-##Backlog
+## Backlog
 - Email authentication
 - Stripe (payment service for donation purposes)
 - React-Select for multi-select
+- Themes
+- Multilingual support
 
 ## Technologies Used
 Server
