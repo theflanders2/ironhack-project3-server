@@ -96,12 +96,4 @@ router.put("/users/:userId", (req, res, next) => {
     });
 });
 
-/*-----GET FIND USER WISHLIST PAGE-----*/
-// full path: /api/users/:userId/wishlist  -  Retrieves a user's wishlist
-// ADD CODE HERE
-
-/*-----PUT UPDATE USER WISHLIST PAGE-----*/
-// full path: /api/users/:userId/wishlist  -  Updates a user's wishlist
-// ADD CODE HERE
-
 module.exports = router;

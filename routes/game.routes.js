@@ -45,7 +45,7 @@ router.get("/games/:gameId", (req, res, next) => {
 });
 
 /*-----POST GAME COVER ART-----*/
-// full path: "/api/games/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+// full path: /api/games/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
 router.post("/games/upload", fileUploader.single("coverArtUrl"), (req, res, next) => {
   // console.log("file is: ", req.file)
  

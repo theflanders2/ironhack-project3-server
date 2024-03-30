@@ -46,7 +46,7 @@ router.post("/comments", (req, res, next) => {
   });
 
 /*-----PUT UPDATE COMMENT-----*/
-// full path: /api/comments/commentId -  Updates a specific comment by id
+// full path: /api/comments/:commentId -  Updates a specific comment by id
 router.put("/comments/:commentId", (req, res, next) => {
   const { commentId } = req.params;
 
@@ -64,7 +64,7 @@ router.put("/comments/:commentId", (req, res, next) => {
 });
 
 /*-----DELETE COMMENT FROM DATABASE AND REMOVE FROM USER'S COMMENTS ARRAY-----*/
-// full path: /api/comments/commentId  -  Deletes a specific comment by id
+// full path: /api/comments/:commentId  -  Deletes a specific comment by id
 router.delete("/comments/:commentId", (req, res, next) => {
   const { commentId } = req.params;
 
