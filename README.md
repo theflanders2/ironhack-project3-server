@@ -33,16 +33,16 @@ Gameodex is a site where you can create a personal index of Playstation console 
 
 ## Technologies Used
 
-Server
-Express.js
-REST API
-Node.js
-Mongoose
-Cloudinary
-JSON Web Token
-Bcrypt
-Render (deployment)
-Mongo DB Atlas (database deployment)
+- Server
+- Express.js
+- REST API
+- Node.js
+- Mongoose
+- Cloudinary
+- JSON Web Token
+- Bcrypt
+- Render (deployment)
+- Mongo DB Atlas (database deployment)
 
 ## Project Structure
 
