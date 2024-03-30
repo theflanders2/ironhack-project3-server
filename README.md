@@ -29,7 +29,6 @@ Gameodex is a site where you can create a personal index of Playstation console 
 - Email authentication
 - Stripe (payment service for donation purposes)
 - React-Select for multi-select
-- Themes
 - Multilingual support
 
 ## Technologies Used
