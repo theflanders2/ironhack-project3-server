@@ -303,30 +303,4 @@ router.put("/games/:gameId/remove-from-wishlist", (req, res, next) => {
   }
 );
 
-/*-----DELETE GAME FROM DATABASE AND REMOVE FROM USER'S GAMES CONTRIBUTED LIST-----*/
-// full path: /api/games/:gameId  -  Deletes a specific game by id
-// router.delete("/games/:gameId", (req, res, next) => {
-//   const { gameId } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(gameId)) {
-//     res.status(400).json({ message: "Specified id is not valid" });
-//     return;
-//   }
-
-//   Game.findByIdAndDelete(gameId)
-//     .then(async (foundGame) => {
-//       const updatedUser = await User.findByIdAndUpdate(foundGame.contributedById._id, {
-//         $pull: { gamesContributed: gameId },
-//       });
-//       // async/await + const updatedUser removes the game from the user's gameContributed property
-//       // $pull removes value/item from array, removes gameID from array gamesContributed array
-//       console.log(`Game with ID ${gameId} has been successfully removed from the game database and user ${req.payload._id}'s "gamesContributed" list.`);
-//       res.status(200).json({ message: `Game with ID ${gameId} has been successfully removed from the game database.`});
-//     })
-//     .catch((err) => {
-//       console.log("Error deleting game", err);
-//       res.status(500).json({ message: "Error deleting game" });
-//     });
-// });
-
 module.exports = router;
