@@ -1,6 +1,5 @@
 const router = require("express").Router();
 
-// ********* require Game model in order to use it *********
 const Game = require("../models/Game.model");
 
 router.get("/", (req, res, next) => {
@@ -15,7 +14,6 @@ router.get("/", (req, res, next) => {
         console.log("Error while getting all games", err);
         res.status(500).json({ message: "Error while getting all games" });
       });
-  // res.status(200).json("All good in here");
 });
 
 module.exports = router;

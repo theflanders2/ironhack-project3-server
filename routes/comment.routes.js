@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 
-// ********* require User, Game and Comment models in order to use them *********
 const User = require("../models/User.model");
 const Game = require("../models/Game.model");
 const Comment = require ("../models/Comment.model");

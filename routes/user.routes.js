@@ -1,16 +1,13 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 
-// ********* require User, Game and Comment models in order to use them *********
 const User = require("../models/User.model");
 const Game = require("../models/Game.model");
 const Comment = require("../models/Comment.model");
 
-// ********* require fileUploader in order to use it *********
 const fileUploader = require("../config/cloudinary.config");
 
-/*-----GET ALL USERS-----*/
-// full path: /api/users -  Retrieves all users
+// GET ALL USERS /api/users 
 router.get("/users", (req, res, next) => {
   User.find()
     .then((allUsers) => res.status(200).json(allUsers))
@@ -20,8 +17,7 @@ router.get("/users", (req, res, next) => {
     });
 });
 
-/*-----GET FIND USER PAGE-----*/
-// full path: /api/users/:userId -  Retrieves a specific user by id
+// GET USER PAGE /api/users/:userId
 router.get("/users/:userId", (req, res, next) => {
   const { userId } = req.params;
 
@@ -35,13 +31,8 @@ router.get("/users/:userId", (req, res, next) => {
       path: "comments",
       populate: { path: "game", select: "name" },
     })
-    .populate("gamesContributed")
-    .populate("gamesPlayed")
-    .populate("gamesCurrentlyPlaying")
-    .populate("wishlist")
+    .populate("gamesContributed gamesPlayed gamesCurrentlyPlaying wishlist")
     .then((foundUser) => {
-      // Deconstruct found user object to omit the password
-      // We should never expose passwords publicly
       const {
         _id,
         username,
@@ -55,7 +46,6 @@ router.get("/users/:userId", (req, res, next) => {
         wishlist,
       } = foundUser;
 
-      // Create a new object that doesn't expose the password
       const reconstructedFoundUser = {
         _id,
         username,
@@ -68,8 +58,6 @@ router.get("/users/:userId", (req, res, next) => {
         gamesCurrentlyPlaying,
         wishlist,
       };
-
-      // Send a json response containing the user object
       res.status(200).json({ user: reconstructedFoundUser });
     })
     .catch((err) => {
@@ -78,8 +66,7 @@ router.get("/users/:userId", (req, res, next) => {
     });
 });
 
-/*-----PUT UPDATE USER PAGE-----*/
-// full path: /api/users/:userId  -  Updates a specific user by id
+// UPDATE USER PAGE /api/users/:userId
 router.put("/users/:userId", (req, res, next) => {
   const { userId } = req.params;
 

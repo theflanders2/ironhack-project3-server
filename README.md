@@ -38,71 +38,87 @@ Gameodex is a site where you can create a personal index of Playstation console 
 - REST API
 - Node.js
 - Mongoose
+- MongoDB
 - Cloudinary
 - JSON Web Token
 - Bcrypt
 - Render (deployment)
 - Mongo DB Atlas (database deployment)
 
-## Project Structure
+# Project Structure
 
-### Models
+## Models
 
-- User:
-  - username: { type: String, unique: true, required: true },
-  - email: { type: String, unique: true, required: true },
-  - password: { type: String, required: true },
-  - prestigeLevel: { type: String, default: "Recently discovered gaming." },
-  - avatarUrl: { type: String, default: "" },
-  - comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
-  - gamesContributed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
-  - gamesPlayed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
-  - gamesCurrentlyPlaying: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
-  - wishlist: [ { type: Schema.Types.ObjectId, ref: 'Game' } ]
+User Model
+```javascript
+{
+  username: { type: String, unique: true, required: true },
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  prestigeLevel: { type: String, default: "Recently discovered gaming." },
+  avatarUrl: { type: String, default: "" },
+  comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
+  gamesContributed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  gamesPlayed: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  gamesCurrentlyPlaying: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+  wishlist: [ { type: Schema.Types.ObjectId, ref: 'Game' } ]
+}
+```
 
-- Game:
-  - name: { type: String, required: true },
-  - releaseYear: { type: Number, required: true },
-  - genre: { type: String, required: true },
-  - coverArtUrl: { type: String, required: false },
-  - platform: { type: String, enum: ["PSOne", "PS2", "PS3", "PS4", "PS5"], required: true },
-  - contributedById: { type: Schema.Types.ObjectId, ref: 'User' },
-  - contributedByUser: { type: String, required: true},
-  - comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ]
+Game Model
+```javascript
+{
+  name: { type: String, required: true },
+  releaseYear: { type: Number, required: true },
+  genre: { type: String, required: true },
+  coverArtUrl: { type: String, required: false },
+  platform: { type: String, enum: ["PSOne", "PS2", "PS3", "PS4", "PS5"], required: true },
+  contributedById: { type: Schema.Types.ObjectId, ref: 'User' },
+  contributedByUser: { type: String, required: true},
+  comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ]
+}
+```
 
-- Comment:
-  - game: { type: Schema.Types.ObjectId, ref: "Game" },
-  - author: { type: Schema.Types.ObjectId, ref: "User" },
-  - content: { type: String, required: true }
+Comment Model
+```javascript
+{
+  game: { type: Schema.Types.ObjectId, ref: "Game" },
+  author: { type: Schema.Types.ObjectId, ref: "User" },
+  content: { type: String, required: true }
+}
+```
 
 ## Middleware
 
 - isAuthenticated (JWT middleware)
 
-### Routes
+## Routes
 
-- "/" GET
-- "/auth/signup" POST
-- "/auth/login" POST
-- "/auth/verify" GET
-- "/api/users" GET
-- "/api/users/:userId" GET
-- "/api/users/:userId" PUT
-- "/api/games" GET
-- "/api/games/:gameId" GET
-- "/api/games/upload" POST
-- "/api/games" POST
-- "/api/games/:gameId" PUT
-- "/api/games/:gameId/add-to-games-played" PUT
-- "/api/games/:gameId/remove-from-games-played" PUT
-- "/api/games/:gameId/add-to-games-currently-playing" PUT
-- "/api/games/:gameId/remove-from-games-currently-playing" PUT
-- "/api/games/:gameId/add-to-wishlist" PUT
-- "/api/games/:gameId/remove-from-wishlist" PUT
-- "/api/comments/:commentId" GET
-- "/api/comments" POST
-- "/api/comments/:commentId" PUT
-- "/api/comments/:commentId" DELETE
+| Path                      | Component                      | Permissions                 | Behavior                                                      |
+| ------------------------- | ------------------------------ | --------------------------- | ------------------------------------------------------------- |
+| `/`                       | HomePage                       | public `<Route>`            | GET Home page                                                 |
+| `/auth/signup`            | SignupPage                     | anon only `<AnonRoute>`     | POST Signup form, link to login, navigate to login after      |
+| `/auth/login`             | LoginPage                      | anon only `<AnonRoute>`     | POST Login form, link to signup, navigate to homepage after   |
+| `/auth/verify`            | n/a                            | user only `<PrivateRoute>`  | GET Verifies user during login process                        |
+| `/logout`                 | n/a                            | user only `<PrivateRoute>`  | Detroys token, navigate to homepage after logout              |
+| `/api/users`              | n/a                            | user only `<PrivateRoute>`  | GET all users                                                 |
+| `/api/users/:userId`      | ProfilePage, UserDetailsPage   | user only `<PrivateRoute>`  | GET a single user                                             |
+| `/api/users/:userId`      | EditProfilePage                | user only `<PrivateRoute>`  | PUT update a user's profile                                   |
+| `/api/games`              | HomePage, GamesListPage        | user only `<PrivateRoute>`  | GET all games                                                 |
+| `/api/games/:gameId`      | GameDetailsPage                | user only `<PrivateRoute>`  | GET single game                                               |
+| `/api/games/upload`       | EditGamePage                   | user only `<PrivateRoute>`  | POST upload game cover art                                    |
+| `/api/games`              | AddGame                        | user only `<PrivateRoute>`  | POST create game                                              |
+| `/api/games/:gameId`      | EditGamePage                   | user only `<PrivateRoute>`  | PUT update game's details                                     |
+| `/api/games/:gameId/add-to-games-played`             | UserProfile                    | user only `<PrivateRoute>`  | PUT add game to list                                          |
+| `/api/games/:gameId/remove-from-games-played`             | UserProfile                    | user only `<PrivateRoute>`  | PUT remove game from list                                     |
+| `/api/games/:gameId/add-to-games-currently-playing`             | UserProfile                    | user only `<PrivateRoute>`  | PUT add game to list                                          |
+| `/api/games/:gameId/remove-from-games-currently-playing`             | UserProfile                    | user only `<PrivateRoute>`  | PUT remove game from list                                     |
+| `/api/games/:gameId/add-to-wishlist`             | UserProfile                    | user only `<PrivateRoute>`  | PUT add game to list                                          |
+| `/api/games/:gameId/remove-from-wishlist`             | UserProfile                    | user only `<PrivateRoute>`  | PUT remove game from list                                     |
+| `/api/comments/:commentId`| GameDetailsPage, ProfilePage   | user only `<PrivateRoute>`  | GET a single comment                                          |
+| `/api/comments`           | AddComment, GameDetailsPage    | user only `<PrivateRoute>`  | POST create a comment                                         |
+| `/api/comments/:commentId`| EditCommentPage                | user only `<PrivateRoute>`  | PUT update a comment                                          |
+| `/api/comments/:commentId`| ProfilePage                    | user only `<PrivateRoute>`  | DELETE a comment                                              |
 
 ## States
 
