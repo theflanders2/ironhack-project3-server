@@ -5,8 +5,7 @@ const User = require("../models/User.model");
 const Game = require("../models/Game.model");
 const Comment = require ("../models/Comment.model");
 
-/*-----GET SINGLE COMMENT-----*/
-// full path: /api/comments/:commentId -  Retrieves a specific game by id
+// GET SINGLE COMMENT /api/comments/:commentId
 router.get("/comments/:commentId", (req, res, next) => {
   const { commentId } = req.params;
 
@@ -15,7 +14,6 @@ router.get("/comments/:commentId", (req, res, next) => {
     return;
   }
 
-  // Each Comment has an _id
   Comment.findById(commentId)
     .then((foundComment) => res.status(200).json(foundComment))
     .catch((err) => {
@@ -24,8 +22,7 @@ router.get("/comments/:commentId", (req, res, next) => {
     });
 });
 
-/*-----POST COMMENT ON SINGLE GAME-----*/ 
-// full path: /api/comments -  Posts a comment on a specific game by id
+// POST COMMENT ON SINGLE GAME /api/comments
 router.post("/comments", (req, res, next) => {
     const { content, gameId } = req.body;
     const game = gameId;
@@ -33,7 +30,6 @@ router.post("/comments", (req, res, next) => {
   
     Comment.create({ game, author, content })
       .then(async (newComment) => {
-        // console.log('newComment:', newComment)
         await Game.findByIdAndUpdate(game, { $push: { comments: newComment._id } })
         await User.findByIdAndUpdate(author, { $push: { comments: newComment._id } })
         res.status(201).json(newComment)
@@ -44,8 +40,7 @@ router.post("/comments", (req, res, next) => {
       });
   });
 
-/*-----PUT UPDATE COMMENT-----*/
-// full path: /api/comments/:commentId -  Updates a specific comment by id
+// PUT UPDATE COMMENT /api/comments/:commentId
 router.put("/comments/:commentId", (req, res, next) => {
   const { commentId } = req.params;
 
@@ -62,8 +57,7 @@ router.put("/comments/:commentId", (req, res, next) => {
     });
 });
 
-/*-----DELETE COMMENT FROM DATABASE AND REMOVE FROM USER'S COMMENTS ARRAY-----*/
-// full path: /api/comments/:commentId  -  Deletes a specific comment by id
+//DELETE COMMENT /api/comments/:commentId
 router.delete("/comments/:commentId", (req, res, next) => {
   const { commentId } = req.params;
 
@@ -77,8 +71,6 @@ router.delete("/comments/:commentId", (req, res, next) => {
       const updatedUser = await User.findByIdAndUpdate(foundComment.author._id, {
         $pull: { comments: commentId },
       });
-      // async/await + const updatedUser remove the comment from the user's comments property
-      // $pull removes value/item from array, removes commentId from array comments
       console.log(`Comment with ID ${commentId} has been successfully removed from ${foundComment.author._id}'s comments list.`);
       res.status(200).json({ message: `Comment with ID ${commentId} has been successfully removed from the database.`});
     })
