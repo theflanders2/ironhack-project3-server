@@ -1,10 +1,18 @@
 # Gameodex
 
-https://gameodex.netlify.app
+- Backend Server:
+  - https://ironhack-project3-server.onrender.com
+- Deployed Single Page App:
+  - https://gameodex.netlify.app
+
 
 ## Description
 
-Gameodex is a site where you can create a personal index of Playstation console games you have played, are currently playing or would like to play. Along with keeping track of games, you can add games to the database, as well as leave comments on games that other members of the site can also see.
+Developed as part of the 24-week Ironhack Full-stack Web Development course using the MERN stack (MongoDB, Express.js, React.js, and Node.js), Gameodex is a single page application which allows site members to create their own personal index of Playstation console games they have played, are currently playing or would like to play.
+
+Along with keeping track of games, members can add new games to the library, as well as leave comments on games that other members can also see.
+
+Gameodex is equipped with full CRUD (create, read, update and delete) capabilities, as well as JSON Web Token (JWT) for authentication.
 
 ## Main Functionalities
 
