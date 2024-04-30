@@ -108,7 +108,7 @@ Comment Model
 | `/auth/signup`            | SignupPage                     | anon only `<AnonRoute>`     | POST Signup form, link to login, navigate to login after      |
 | `/auth/login`             | LoginPage                      | anon only `<AnonRoute>`     | POST Login form, link to signup, navigate to homepage after   |
 | `/auth/verify`            | n/a                            | user only `<PrivateRoute>`  | GET Verifies user during login process                        |
-| `/logout`                 | n/a                            | user only `<PrivateRoute>`  | Detroys token, navigate to homepage after logout              |
+| `/logout`                 | n/a                            | user only `<PrivateRoute>`  | Destroys token, navigate to homepage after logout              |
 | `/api/users`              | n/a                            | user only `<PrivateRoute>`  | GET all users                                                 |
 | `/api/users/:userId`      | ProfilePage, UserDetailsPage   | user only `<PrivateRoute>`  | GET a single user                                             |
 | `/api/users/:userId`      | EditProfilePage                | user only `<PrivateRoute>`  | PUT update a user's profile                                   |
