@@ -5,7 +5,7 @@ const Game = require("../models/Game.model");
 router.get("/", (req, res, next) => {
     Game.find()
       .then((allGames) => {
-        const slicePoint = allGames.length - 10;
+        const slicePoint = allGames.length - 20;
         const latestTenGamesAdded = allGames.slice(slicePoint).reverse();
         res.status(200).json(latestTenGamesAdded)
         console.log("latestTenGamesAdded", latestTenGamesAdded)
