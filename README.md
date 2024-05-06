@@ -1,5 +1,4 @@
 # Gameodex
-
 - Backend Server:
   - https://ironhack-project3-server.onrender.com
 - Deployed Single Page App:
@@ -7,7 +6,6 @@
 
 
 ## Description
-
 Developed as part of the 24-week Ironhack Full-stack Web Development course using the MERN stack (MongoDB, Express.js, React.js, and Node.js), Gameodex is a single page application which allows site members to create their own personal index of Playstation console games they have played, are currently playing or would like to play.
 
 Along with keeping track of games, members can add new games to the library, as well as leave comments on games that other members can also see.
@@ -15,7 +13,6 @@ Along with keeping track of games, members can add new games to the library, as 
 Gameodex is equipped with full CRUD (create, read, update and delete) capabilities, as well as JSON Web Token (JWT) for authentication.
 
 ## Main Functionalities
-
 - User creation via sign up form
 - Authentication using JSON Web Token (JWT)
 - Registered users can log in
@@ -33,14 +30,12 @@ Gameodex is equipped with full CRUD (create, read, update and delete) capabiliti
 - Edit profile
 
 ## Backlog
-
 - Email authentication
 - Stripe (payment service for donation purposes)
 - React-Select for multi-select
 - Multilingual support
 
 ## Technologies Used
-
 - Server
 - Express.js
 - REST API
@@ -53,10 +48,9 @@ Gameodex is equipped with full CRUD (create, read, update and delete) capabiliti
 - Render (deployment)
 - Mongo DB Atlas (database deployment)
 
-# Project Structure
+## Project Structure
 
-## Models
-
+### Models
 User Model
 ```javascript
 {
@@ -96,19 +90,17 @@ Comment Model
 }
 ```
 
-## Middleware
-
+### Middleware
 - isAuthenticated (JWT middleware)
 
-## Routes
-
+### Routes
 | Path                      | Component                      | Permissions                 | Behavior                                                      |
 | ------------------------- | ------------------------------ | --------------------------- | ------------------------------------------------------------- |
 | `/`                       | HomePage                       | public `<Route>`            | GET Home page                                                 |
 | `/auth/signup`            | SignupPage                     | anon only `<AnonRoute>`     | POST Signup form, link to login, navigate to login after      |
 | `/auth/login`             | LoginPage                      | anon only `<AnonRoute>`     | POST Login form, link to signup, navigate to homepage after   |
 | `/auth/verify`            | n/a                            | user only `<PrivateRoute>`  | GET Verifies user during login process                        |
-| `/logout`                 | n/a                            | user only `<PrivateRoute>`  | Destroys token, navigate to homepage after logout              |
+| `/logout`                 | n/a                            | user only `<PrivateRoute>`  | Destroys token, navigate to homepage after logout             |
 | `/api/users`              | n/a                            | user only `<PrivateRoute>`  | GET all users                                                 |
 | `/api/users/:userId`      | ProfilePage, UserDetailsPage   | user only `<PrivateRoute>`  | GET a single user                                             |
 | `/api/users/:userId`      | EditProfilePage                | user only `<PrivateRoute>`  | PUT update a user's profile                                   |
@@ -129,16 +121,13 @@ Comment Model
 | `/api/comments/:commentId`| ProfilePage                    | user only `<PrivateRoute>`  | DELETE a comment                                              |
 
 ## States
-
 - Non-registered user
 - Registered User
 
 ## Links
-
 - [Trello Link] (https://trello.com/b/mQz0dVtV/ironhack-project-3)
 - [Github Repository Link] (https://github.com/theflanders2/ironhack-project3-server)
 - Deployment Link (https://gameodex.netlify.app)
 
 ## Contributors / Team
-
-[Kenneth Flanders] (https://github.com/theflanders2)
+[Kenneth Flanders] (https://github.com/theflanders2) (https://www.linkedin.com/in/kwflanders)
