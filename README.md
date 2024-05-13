@@ -84,6 +84,7 @@ Game Model
           "Fighting",
           "FPS",
           "Horror",
+          "Interactive Film",
           "MMO",
           "Multiplayer",
           "Multiplayer online",
@@ -100,6 +101,8 @@ Game Model
           "Strategy",
           "Survival",
           "Tactical RPG",
+          "Tactical Shooter",
+          "Third-person Shooter"
         ],
         required: true,
       },
